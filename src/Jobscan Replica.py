@@ -1,194 +1,181 @@
-""" Jobscan Replica """
+# TODO: figure out if there's a more efficient way of doing this procedure. I'm not familiar with the string.replace() function's efficiency.
+def remove_punctuation(split_text_list):
+    clean_split_text_list = [  # Remove punctuation from list of words in job description
+        word.replace('•', "")
+            .replace(",", "")
+            .replace("""""", "")
+            .replace("-", "")
+            .replace("'", "")
+            .replace("''", "")
+            .replace(":", "")
+            .replace(";", "")
+            .replace("*", "")
+            .replace("!", "")
+            .replace("&", "")
+            .replace("/n", "")
+            .replace("/", "")
+            .replace("?", "")
+            .replace("(", "")
+            .replace(")", "")
+        for line in split_text_list for word in line.lower().split()
+        ]
+    return clean_split_text_list
 
+def main ():
+    """ Jobscan Replica """
+    " Step 1: Copy and paste the job posting into the triple quotes below "
 
-" Step 1: Copy and paste the job posting into the triple quotes below "
+    job_posting = """
 
-job_posting = """
 
 
+    """
+    " Step 5: Copy your resume below within the triple quotes "
 
-"""
+    resume = """
 
 
-" Step 2: Remove punctuation from job posting "
 
-job_posting_list = job_posting.split()  # Creates a list of words in the job description
+    """
 
-clean_job_posting = [  # Remove punctuation from list of words in job description
-    word.replace('•', "")
-        .replace(",", "")
-        .replace("""""", "")
-        .replace("-", "")
-        .replace("'", "")
-        .replace("''", "")
-        .replace(":", "")
-        .replace(";", "")
-        .replace("*", "")
-        .replace("!", "")
-        .replace("&", "")
-        .replace("/n", "")
-        .replace("/", "")
-        .replace("?", "")
-        .replace("(", "")
-        .replace(")", "")
-    for line in job_posting_list for word in line.lower().split()
-    ]
+    " Step 2: Remove punctuation from job posting "
 
-job_count = dict()
-for i in clean_job_posting:
-    job_count[i] = job_count.get(i, 0) + 1
+    job_posting_list = job_posting.split()  # Creates a list of words in the job description
 
+    clean_job_posting = remove_punctuation(job_posting_list)
 
-" Step 3: Remove common filler words in job posting "
-# Feel free to add additional words to the list below that appear frequently in job posts (e.g. task, qualification, etc.)
+    job_count = dict()
+    for i in clean_job_posting:
+        job_count[i] = job_count.get(i, 0) + 1
 
-common_job_words = [
+    " Step 6: Remove punctuation from resume "
 
-    'a', 'ability', 'about', 'added', 'against', 'an', 'and', 'any' 'are', 'as', 'assist', 'assisting', 'at',
+    resume_list = resume.split()  # Creates a list of words in your resume
 
-    'be', 'both', 'but', 'by',
+    clean_resume = remove_punctuation(resume_list)
 
-    'can',
+    resume_count = dict()
 
-    'demonstrate', 'demonstrated', 'duties'
+    for i in clean_resume:
+        resume_count[i] = resume_count.get(i, 0) + 1
 
-    'employee', 'every', 'existing', 'experience',
 
-    'following', 'for', 'from',
+    " Step 3: Remove common filler words in job posting "
+    # Feel free to add additional words to the list below that appear frequently in job posts (e.g. task, qualification, etc.)
 
-    'gpa',
+    common_job_words = [
 
-    'have',
+        'a', 'ability', 'about', 'added', 'against', 'an', 'and', 'any' 'are', 'as', 'assist', 'assisting', 'at',
 
-    'in', 'including', 'identify', 'into', 'is', 'it',
+        'be', 'both', 'but', 'by',
 
-    'make', 'members', 'more', 'must',
+        'can',
 
-    'not',
+        'demonstrate', 'demonstrated', 'duties'
 
-    'obtain', 'of', 'on', 'opportunity', 'or', 'other', 'our',
+        'employee', 'every', 'existing', 'experience',
 
-    'preferred',
+        'following', 'for', 'from',
 
-    'qualifications',
+        'gpa',
 
-    'reach', 'require', 'required',
+        'have',
 
-    'skill', 'skills', 'strong', 'such', 'support', 'supporting',
+        'in', 'including', 'identify', 'into', 'is', 'it',
 
-    'that', 'the', 'their', 'this', 'to',
+        'make', 'members', 'more', 'must',
 
-    'upon', 'us', 'use', 'using',
+        'not',
 
-    'we', 'will', 'with', 'work', 'working',
+        'obtain', 'of', 'on', 'opportunity', 'or', 'other', 'our',
 
-    'you', 'your',
+        'preferred',
 
-    ]
+        'qualifications',
 
+        'reach', 'require', 'required',
 
-" Step 4: Show top keywords in the job posting and count their frequency "
+        'skill', 'skills', 'strong', 'such', 'support', 'supporting',
 
-for key in list(job_count.keys()):
-    if key in common_job_words:
-        del job_count[key]
+        'that', 'the', 'their', 'this', 'to',
 
-job_keywords_count = sorted(job_count.items(), key=lambda x: x[1], reverse=True)
-print(job_keywords_count)
+        'upon', 'us', 'use', 'using',
 
+        'we', 'will', 'with', 'work', 'working',
 
+        'you', 'your',
 
+        ]
 
-" Step 5: Copy your resume below within the triple quotes "
 
-resume = """
+    " Step 4: Show top keywords in the job posting and count their frequency "
 
+    for key in list(job_count.keys()):
+        if key in common_job_words:
+            del job_count[key]
 
+    job_keywords_count = sorted(job_count.items(), key=lambda x: x[1], reverse=True)
+    print(job_keywords_count)
 
-"""
+    " Step 7: Remove common filler words in resume "
+    # Feel free to add words to the list that appear frequently in your resume (e.g. cities you have worked in, your name, etc.)
 
+    common_resume_words = [
+        '2018', '2019', '2020', '2021', '2022', '2023',
 
-" Step 6: Remove punctuation from resume "
+        'a', 'an', 'and', 'as',
 
-resume_list = resume.split()  # Creates a list of words in your resume
+        'be', 'bloomington',
 
-clean_resume = [  # Remove punctuation from resume
-    word.replace(",", "")
-        .replace("""""", "")
-        .replace("-", "")
-        .replace("'", "")
-        .replace("''", "")
-        .replace(":", "")
-        .replace(";", "")
-        .replace("*", "")
-        .replace("!", "")
-        .replace("&", "")
-        .replace("/n", "")
-        .replace("/", "")
-        .replace("?", "")
-        .replace("(", "")
-        .replace(")", "")
-        .replace("•", "")
-    for line in resume_list for word in line.lower().split()]
+        'dc', 'december',
 
-resume_count = dict()
+        'every', 'existing', 'experience',
 
-for i in clean_resume:
-    resume_count[i] = resume_count.get(i, 0) + 1
+        'from', 'for',
 
+        'have',
 
-" Step 7: Remove common filler words in resume "
-# Feel free to add words to the list that appear frequently in your resume (e.g. cities you have worked in, your name, etc.)
+        'in', 'into', 'is', 'it',
 
-common_resume_words = [
-    '2018', '2019', '2020', '2021', '2022',
+        'may',
 
-    'a', 'an', 'and', 'as',
+        'obtain', 'of', 'on', 'opportunity', 'or', 'our',
 
-    'be', 'bloomington',
+        'portland',
 
-    'dc', 'december',
+        'spea', 'strong', 'support', 'supporting',
 
-    'every', 'existing', 'experience',
+        'that', 'the', 'their', 'to',
 
-    'from', 'for',
+        'university', 'us', 'use',
 
-    'have',
+        'washington', 'we', 'will', 'work', 'with',
 
-    'in', 'into', 'is', 'it',
+        'you', 'your',
 
-    'may',
+        ]
 
-    'obtain', 'of', 'on', 'opportunity', 'or', 'our',
+    for key in list(resume_count.keys()):
+        if key in common_resume_words:
+            del resume_count[key]
 
-    'portland',
 
-    'spea', 'strong', 'support', 'supporting',
+    " Step 8: Show top keywords in your resume and count their frequency "
 
-    'that', 'the', 'their', 'to',
+    resume_keywords_count = sorted(resume_count.items(), key=lambda x: x[1], reverse=True)
+    print(resume_keywords_count)
 
-    'university', 'us', 'use',
 
-    'washington', 'we', 'will', 'work', 'with',
+    " Step 9: Identify key words in job posting that are not in your resume "
 
-    'you', 'your',
+    # TODO: can improve by using the job_keywords_count and resume_keywords_count variables, which are lists not dictionary.
+    missing = {k: v for k, v in job_count.items() if k not in resume_count}
+    missing_keywords = sorted(missing.items(), key=lambda x: x[1], reverse=True)
+    print(missing_keywords)
 
-    ]
 
-for key in list(resume_count.keys()):
-    if key in common_resume_words:
-        del resume_count[key]
+    " Step 10: Identify key words in your resume that are not in the job posting "
 
-
-" Step 8: Show top keywords in your resume and count their frequency "
-
-resume_keywords_count = sorted(resume_count.items(), key=lambda x: x[1], reverse=True)
-print(resume_keywords_count)
-
-
-" Step 9: Identify key words in job posting that are not in your resume "
-
-# TODO: can improve by using the job_keywords_count and resume_keywords_count variables, which are lists not dictionary.
-missing = {k: v for k, v in job_count.items() if k not in resume_count}
-missing_keywords = sorted(missing.items(), key=lambda x: x[1], reverse=True)
-print(missing_keywords)
+# put the bulk of the code into a "main" function so that I could more easily separate out the parts of this that could be turned into discrete subroutines.
+if __name__ == '__main__':
+    main()
