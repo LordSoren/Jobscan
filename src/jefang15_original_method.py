@@ -17,26 +17,14 @@ def remove_punctuation(split_text_list):
             .replace("?", "")
             .replace("(", "")
             .replace(")", "")
+            .replace(".", "")
+            .replace("…", "")
         for line in split_text_list for word in line.lower().split()
         ]
     return clean_split_text_list
 
-def main ():
-    """ Jobscan Replica """
-    " Step 1: Copy and paste the job posting into the triple quotes below "
-
-    job_posting = """
-
-
-
-    """
-    " Step 5: Copy your resume below within the triple quotes "
-
-    resume = """
-
-
-
-    """
+def Jefang15_comparison(job_posting, resume):
+    # we're taking job_posting and resume as arguments so that we can use this code for multiple job postings and resumes.
 
     " Step 2: Remove punctuation from job posting "
 
@@ -163,7 +151,7 @@ def main ():
     " Step 8: Show top keywords in your resume and count their frequency "
 
     resume_keywords_count = sorted(resume_count.items(), key=lambda x: x[1], reverse=True)
-    print(resume_keywords_count)
+    #print(resume_keywords_count)
 
 
     " Step 9: Identify key words in job posting that are not in your resume "
@@ -171,11 +159,9 @@ def main ():
     # TODO: can improve by using the job_keywords_count and resume_keywords_count variables, which are lists not dictionary.
     missing = {k: v for k, v in job_count.items() if k not in resume_count}
     missing_keywords = sorted(missing.items(), key=lambda x: x[1], reverse=True)
-    print(missing_keywords)
-
+    print("Missing keywords")
+    print("----------------")
+    for i in missing_keywords:
+        print(i[0], i[1])
 
     " Step 10: Identify key words in your resume that are not in the job posting "
-
-# put the bulk of the code into a "main" function so that I could more easily separate out the parts of this that could be turned into discrete subroutines.
-if __name__ == '__main__':
-    main()
