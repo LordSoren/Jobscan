@@ -17,23 +17,6 @@ from . import spacy_extraction
 from . import textblob_extraction
 from . import YAKE_extraction
 
-# Get the current working directory as the folder_path
-current_file = os.path.abspath(__file__)
-current_directory = os.path.dirname(current_file)
-
-# Now, 'current_directory' contains the path to the directory of the current script
-print(current_directory)
-
-# Get a list of all Python files in the folder that match the pattern
-files = glob.glob(f"{current_directory}/*_extraction.py")
-
-# Import each module
-print("Importing modules from this folder:" + current_directory)
-for file in files:
-    print(file)
-    module_name = os.path.basename(file).replace(".py", "")
-    importlib.import_module(module_name)
-
 def main(resume, posting):
     '''
     For each of the extraction methods, run an extraction on the posting and the resume.
@@ -57,7 +40,7 @@ def main(resume, posting):
     textblob_posting_keywords = textblob_extraction.textblob_keyword_extraction(posting)
     YAKE_resume_keywords = YAKE_extraction.YAKE_keyword_extraction(resume)
     YAKE_posting_keywords = YAKE_extraction.YAKE_keyword_extraction(posting)
-    
+
     
     
 
