@@ -5,34 +5,61 @@ Then I can decide which library to use for the rest of the project.
 '''
 
 import spacy
+#import the other files in this folder
+import glob
+import importlib
+import os
+from . import KeyBERT_extraction
+from . import NLTK_extraction
+from . import pyTextRank_extraction
+from . import RAKE_extraction
+from . import spacy_extraction
+from . import textblob_extraction
+from . import YAKE_extraction
 
-'''
-Alternative function to do the same basic thing, but more differently.
-'''
-def main_using_spacy(job_posting, resume):
-    # Extract named entities from the job posting and resume
-    nlp = spacy.load("en_core_web_sm")
-    job_posting_doc = nlp(job_posting)
-    resume_doc = nlp(resume)
-    # Print the named entities in the job posting that are not in the resume
-    print("USING SPACY")
-    print("Job posting entities")
-    print("--------------------")
-    print(job_posting_doc.ents)
-    print("Resume entities")
-    print("---------------")
-    print(resume_doc.ents)
-    print("Resume entities missing")
-    print("-----------------------")
-    for entity in job_posting_doc.ents:
-        if entity not in resume_doc.ents:
-            print(entity)
-    #print(resume_doc.ents)
+# Get the current working directory as the folder_path
+current_file = os.path.abspath(__file__)
+current_directory = os.path.dirname(current_file)
+
+# Now, 'current_directory' contains the path to the directory of the current script
+print(current_directory)
+
+# Get a list of all Python files in the folder that match the pattern
+files = glob.glob(f"{current_directory}/*_extraction.py")
+
+# Import each module
+print("Importing modules from this folder:" + current_directory)
+for file in files:
+    print(file)
+    module_name = os.path.basename(file).replace(".py", "")
+    importlib.import_module(module_name)
+
+def main(resume, posting):
     '''
-    for entity in job_posting_doc.ents:
-        if entity.text not in resume_doc.ents:
-            print(entity.text, entity.label_)
+    For each of the extraction methods, run an extraction on the posting and the resume.
+    Save the results (lists of words) so that we can compare all methods and their outcomes.
+    I need to figure out how to format the output so that it's easy to compare.
+
+    The extraction methods are in files that end with '_extraction.py'.
+    the extraction methods have names that end with '_keyword_extraction(text)'.
     '''
+    keyBert_resume_keywords = KeyBERT_extraction.keybert_keyword_extraction(resume)
+    keyBert_posting_keywords = KeyBERT_extraction.keybert_keyword_extraction(posting)
+    nltk_resume_keywords = NLTK_extraction.nltk_keyword_extraction(resume)
+    nltk_posting_keywords = NLTK_extraction.nltk_keyword_extraction(posting)
+    pyTextRank_resume_keywords = pyTextRank_extraction.pyTextRank_keyword_extraction(resume)
+    pyTextRank_posting_keywords = pyTextRank_extraction.pyTextRank_keyword_extraction(posting)
+    RAKE_resume_keywords = RAKE_extraction.RAKE_keyword_extraction(resume)
+    RAKE_posting_keywords = RAKE_extraction.RAKE_keyword_extraction(posting)
+    spacy_resume_keywords = spacy_extraction.spacy_keyword_extraction(resume)
+    spacy_posting_keywords = spacy_extraction.spacy_keyword_extraction(posting)
+    textblob_resume_keywords = textblob_extraction.textblob_keyword_extraction(resume)
+    textblob_posting_keywords = textblob_extraction.textblob_keyword_extraction(posting)
+    YAKE_resume_keywords = YAKE_extraction.YAKE_keyword_extraction(resume)
+    YAKE_posting_keywords = YAKE_extraction.YAKE_keyword_extraction(posting)
+    
+    
+    
 
 # put the bulk of the code into a "main" function so that I could more easily separate out the parts of this that could be turned into discrete subroutines.
 if __name__ == '__main__':
