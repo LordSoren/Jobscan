@@ -11,11 +11,27 @@ import importlib
 import os
 from . import KeyBERT_extraction
 from . import NLTK_extraction
-from . import pyTextRank_extraction
+from . import summa_extraction
 from . import RAKE_extraction
 from . import spacy_extraction
 from . import textblob_extraction
 from . import YAKE_extraction
+
+
+# this is a dictionary of all the extraction methods that I want to use.
+# the keys are the names of the files that contain the extraction methods.
+# the values are the names of the extraction methods.
+# I'm using this so that I can loop through all the extraction methods while also being able to call them by name.
+extraction_methods = {
+    'KeyBERT_extraction': KeyBERT_extraction.keybert_keyword_extraction,
+    'NLTK_extraction': NLTK_extraction.nltk_keyword_extraction,
+    'summa_extraction': summa_extraction.summa_keyword_extraction,
+    'RAKE_extraction': RAKE_extraction.RAKE_keyword_extraction,
+    'spacy_extraction': spacy_extraction.spacy_keyword_extraction,
+    'pyTextRank_extraction': spacy_extraction.pyTextRank_keyword_extraction,
+    'textblob_extraction': textblob_extraction.textblob_keyword_extraction,
+    'YAKE_extraction': YAKE_extraction.YAKE_keyword_extraction
+}
 
 def main(resume, posting):
     '''
@@ -26,20 +42,6 @@ def main(resume, posting):
     The extraction methods are in files that end with '_extraction.py'.
     the extraction methods have names that end with '_keyword_extraction(text)'.
     '''
-    keyBert_resume_keywords = KeyBERT_extraction.keybert_keyword_extraction(resume)
-    keyBert_posting_keywords = KeyBERT_extraction.keybert_keyword_extraction(posting)
-    nltk_resume_keywords = NLTK_extraction.nltk_keyword_extraction(resume)
-    nltk_posting_keywords = NLTK_extraction.nltk_keyword_extraction(posting)
-    pyTextRank_resume_keywords = pyTextRank_extraction.pyTextRank_keyword_extraction(resume)
-    pyTextRank_posting_keywords = pyTextRank_extraction.pyTextRank_keyword_extraction(posting)
-    RAKE_resume_keywords = RAKE_extraction.RAKE_keyword_extraction(resume)
-    RAKE_posting_keywords = RAKE_extraction.RAKE_keyword_extraction(posting)
-    spacy_resume_keywords = spacy_extraction.spacy_keyword_extraction(resume)
-    spacy_posting_keywords = spacy_extraction.spacy_keyword_extraction(posting)
-    textblob_resume_keywords = textblob_extraction.textblob_keyword_extraction(resume)
-    textblob_posting_keywords = textblob_extraction.textblob_keyword_extraction(posting)
-    YAKE_resume_keywords = YAKE_extraction.YAKE_keyword_extraction(resume)
-    YAKE_posting_keywords = YAKE_extraction.YAKE_keyword_extraction(posting)
 
     
     

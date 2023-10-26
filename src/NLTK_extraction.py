@@ -11,5 +11,6 @@ def nltk_keyword_extraction(text):
     stop_words = set(stopwords.words("english"))
     words = [word for word in words if word not in stop_words]
     fdist = FreqDist(words)
-    keywords = fdist.most_common(10)  # Adjust the number of keywords as needed
-    return [word for word, _ in keywords]
+    keywords = fdist.most_common(20)  # Arbitrarily chose 20 because that's how many the free sample on Jobscan gives.
+    #return results as a set of words
+    return set([word for word, _ in keywords])
