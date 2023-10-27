@@ -4,18 +4,17 @@ This will let me see which results best match the results from the original Jobs
 Then I can decide which library to use for the rest of the project.
 '''
 
-import spacy
-#import the other files in this folder
-import glob
-import importlib
-import os
-from . import KeyBERT_extraction
-from . import NLTK_extraction
-from . import summa_extraction
-from . import RAKE_extraction
-from . import spacy_extraction
-from . import textblob_extraction
-from . import YAKE_extraction
+from KeyBERT_extraction import keybert_keyword_extraction
+from NLTK_extraction import nltk_keyword_extraction
+from summa_extraction import summa_keyword_extraction
+from RAKE_extraction import RAKE_keyword_extraction
+from spacy_extraction import spacy_keyword_extraction
+from spacy_extraction import pyTextRank_keyword_extraction
+from textblob_extraction import textblob_keyword_extraction
+from YAKE_extraction import YAKE_keyword_extraction
+
+import pandas as pd
+import numpy as np
 
 
 # this is a dictionary of all the extraction methods that I want to use.
@@ -23,15 +22,54 @@ from . import YAKE_extraction
 # the values are the names of the extraction methods.
 # I'm using this so that I can loop through all the extraction methods while also being able to call them by name.
 extraction_methods = {
-    'KeyBERT_extraction': KeyBERT_extraction.keybert_keyword_extraction,
-    'NLTK_extraction': NLTK_extraction.nltk_keyword_extraction,
-    'summa_extraction': summa_extraction.summa_keyword_extraction,
-    'RAKE_extraction': RAKE_extraction.RAKE_keyword_extraction,
-    'spacy_extraction': spacy_extraction.spacy_keyword_extraction,
-    'pyTextRank_extraction': spacy_extraction.pyTextRank_keyword_extraction,
-    'textblob_extraction': textblob_extraction.textblob_keyword_extraction,
-    'YAKE_extraction': YAKE_extraction.YAKE_keyword_extraction
+    'KeyBERT_extraction': keybert_keyword_extraction,
+    #'NLTK_extraction': nltk_keyword_extraction,
+    'summa_extraction': summa_keyword_extraction,
+    'RAKE_extraction': RAKE_keyword_extraction,
+    'spacy_extraction': spacy_keyword_extraction,
+    'pyTextRank_extraction': pyTextRank_keyword_extraction,
+    'textblob_extraction': textblob_keyword_extraction,
+    'YAKE_extraction': YAKE_keyword_extraction
 }
+
+def save_verbose_results(extraction_results, set_of_all_keywords):
+    # to make it easier to compare the results, we'll create a pandas dataframe.
+    # the rows will be the words in the set of all keywords.
+    # the columns will be the sets of keywords from each extraction method for both the resume and the posting.
+    # the cells will be True or False, depending on whether the word is in the set of keywords for that extraction method.
+    list_of_all_keywords = list(set_of_all_keywords)
+    results = pd.DataFrame(index=list_of_all_keywords, columns=extraction_results.keys())
+    for column_name, set_of_keywords in extraction_results.items():
+        for keyword in list_of_all_keywords:
+            if keyword in set_of_keywords:
+                results[column_name][keyword] = 1
+            else:
+                results[column_name][keyword] = 0
+
+    # now we'll add a column that shows the number of extraction methods that found each keyword.
+    results['number_of_methods'] = results.sum(axis=1)
+    # dump the results into a csv file so that we can look at them.
+    results.to_csv('results.csv')
+
+def save_resultant_difference(extraction_results, set_of_all_keywords):
+    """
+    In this function, we're going to have a single column per method that shows the keywords in the posting that aren't in the resume.
+    """
+    list_of_all_keywords = list(set_of_all_keywords)
+    # create a dataframe, initialize it to all zeros.
+    results = pd.DataFrame(0, index=extraction_methods.keys(), columns=list_of_all_keywords)
+    for key in extraction_methods.keys():
+        resume_set = extraction_results[key + "_resume"]
+        posting_set = extraction_results[key + "_posting"]
+        # difference is everything in posting_set that isn't in resume_set
+        difference = posting_set.difference(resume_set)
+        # now we'll put the difference into the results dataframe.
+        for keyword in difference:
+            results[keyword][key] = 1
+
+    # dump the results into a csv file so that we can look at them.
+    results.to_csv('differences.csv')
+
 
 def main(resume, posting):
     '''
@@ -42,6 +80,19 @@ def main(resume, posting):
     The extraction methods are in files that end with '_extraction.py'.
     the extraction methods have names that end with '_keyword_extraction(text)'.
     '''
+    set_of_all_keywords = set()
+    extraction_results = {}
+    for filename, method_name in extraction_methods.items():
+        resume_set = method_name(resume)
+        posting_set = method_name(posting)
+        extraction_results[filename + "_resume"] = resume_set
+        extraction_results[filename + "_posting"] = posting_set
+        set_of_all_keywords = set_of_all_keywords.union(resume_set)
+        set_of_all_keywords = set_of_all_keywords.union(posting_set)
+
+    #save_verbose_results(extraction_results, set_of_all_keywords)
+    save_resultant_difference(extraction_results, set_of_all_keywords)
+    
 
     
     
@@ -129,5 +180,5 @@ if __name__ == '__main__':
 
 
     """
-    #main(job_posting, resume)
+    main(resume, job_posting)
     #main_using_spacy(job_posting, resume)
